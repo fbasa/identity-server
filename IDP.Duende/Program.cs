@@ -8,12 +8,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
 
 // Put migrations in *this* assembly (your app)
-var migrationsAssembly = "Duende.IdentityServer.EntityFramework.DbContexts";//typeof(Program).Assembly.GetName().Name;
+var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
 
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(conn, x => x.MigrationsHistoryTable("__EFMigrationsHistory", "idsvr_identity")));
+
+builder.Services
+    .AddIdentity<AppUser, AppRole>(opt =>
+    {
+        opt.User.RequireUniqueEmail = true;
+        opt.Password.RequiredLength = 8;
+        opt.SignIn.RequireConfirmedEmail = false; // set true in prod + email sender
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+//builder.Services.AddConfiguredIdentityServer(builder.Configuration);
 
 builder.Services
     .AddIdentityServer()
@@ -30,18 +42,6 @@ builder.Services
         options.EnableTokenCleanup = true;
         options.TokenCleanupInterval = 3600;
     });
-
-builder.Services
-    .AddIdentity<AppUser, AppRole>(opt =>
-    {
-        opt.User.RequireUniqueEmail = true;
-        opt.Password.RequiredLength = 8;
-        opt.SignIn.RequireConfirmedEmail = false; // set true in prod + email sender
-    })
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddConfiguredIdentityServer(builder.Configuration);
 
 builder.Services.AddControllersWithViews(); // login/consent UI (Razor if you add it)
 builder.Services.AddCors(opt =>
