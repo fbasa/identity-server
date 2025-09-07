@@ -1,4 +1,5 @@
 ﻿using IDP.OpenIddict.Identity;
+using IDP.OpenIddict.ServerHosting;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

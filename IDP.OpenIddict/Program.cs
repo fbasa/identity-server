@@ -1,6 +1,6 @@
 using IDP.OpenIddict;
 using IDP.OpenIddict.Identity;
-using IDP.OpenIddict.OpenIddict;
+using IDP.OpenIddict.ServerHosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
