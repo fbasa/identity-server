@@ -1,0 +1,6 @@
+@IDP.Duende_HostAddress = http://localhost:5196
+
+GET {{IDP.Duende_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
