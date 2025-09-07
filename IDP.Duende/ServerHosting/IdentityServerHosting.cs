@@ -1,7 +1,8 @@
-﻿namespace IDP.Duende;
+﻿namespace IDP.Duende.ServerHosting;
 
 using global::Duende.IdentityServer.EntityFramework.DbContexts;
 using global::Duende.IdentityServer.EntityFramework.Mappers;
+using IDP.Duende.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 

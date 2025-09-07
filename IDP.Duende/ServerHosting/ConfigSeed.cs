@@ -1,4 +1,4 @@
-﻿namespace IDP.Duende;
+﻿namespace IDP.Duende.ServerHosting;
 
 using global::Duende.IdentityServer.Models;
 

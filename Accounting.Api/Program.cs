@@ -6,7 +6,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
 
-var authAuthority = builder.Configuration["Auth:Authority"] ?? "https://localhost:5001";
+var authAuthority = builder.Configuration["Auth:Issuer"];
 var audience = "accounting-api";
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

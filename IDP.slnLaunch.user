@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "IDP.Duende\\IDP.Duende.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Payment.Api\\Payment.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Accounting.Api\\Accounting.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

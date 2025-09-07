@@ -1,4 +1,5 @@
-using IDP.Duende;
+using IDP.Duende.Identity;
+using IDP.Duende.ServerHosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;

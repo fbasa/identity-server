@@ -1,4 +1,4 @@
-﻿namespace IDP.Duende;
+﻿namespace IDP.Duende.Identity;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
