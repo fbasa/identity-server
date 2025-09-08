@@ -25,6 +25,8 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     // no-op; AuthService init runs at bootstrap
+    this.loadPayments();
+    this.loadAccounting();
   }
 
 

@@ -66,7 +66,9 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("spa", p => p
         .WithOrigins("http://localhost:4200")
-        .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials());
 });
 
 var app = builder.Build();

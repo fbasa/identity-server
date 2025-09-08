@@ -24,6 +24,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScopePolicies();
 builder.Services.AddControllers();
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("spa", p => p
+        .WithOrigins("http://localhost:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials());
+});
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -32,6 +40,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseCors("spa");
 app.UseAuthorization();
 
 app.MapControllers();
