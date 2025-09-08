@@ -3,7 +3,7 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "IDP.Duende\\IDP.Duende.csproj",
+        "Path": "IDP.OpenIddict\\IDP.OpenIddict.csproj",
         "Action": "Start"
       },
       {
@@ -12,10 +12,6 @@
       },
       {
         "Path": "Accounting.Api\\Accounting.Api.csproj",
-        "Action": "Start"
-      },
-      {
-        "Path": "MVC.Web\\MVC.Web.csproj",
         "Action": "Start"
       }
     ]

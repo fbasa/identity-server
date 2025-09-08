@@ -1,8 +1,8 @@
-using IDP.OpenIddict;
 using IDP.OpenIddict.Identity;
 using IDP.OpenIddict.ServerHosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.Abstractions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +22,14 @@ builder.Services.AddIdentity<AppUser, AppRole>(opt =>
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(o =>
+{
+    // Make Identity emit OIDC-standard names
+    o.ClaimsIdentity.UserIdClaimType = OpenIddictConstants.Claims.Subject; // "sub"
+    o.ClaimsIdentity.UserNameClaimType = OpenIddictConstants.Claims.Name;    // "name"
+    o.ClaimsIdentity.RoleClaimType = OpenIddictConstants.Claims.Role;    // "role"
+});
 
 builder.Services.AddConfiguredOpenIddict(builder.Configuration);
 

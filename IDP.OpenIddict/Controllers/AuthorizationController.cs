@@ -12,17 +12,11 @@ using System.Security.Claims;
 namespace IDP.OpenIddict.Controllers;
 
 [ApiController]
-public class AuthorizationController : Controller
+public class AuthorizationController(
+    SignInManager<AppUser> signInManager, 
+    UserManager<AppUser> userManager
+    ) : Controller
 {
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly UserManager<AppUser> _userManager;
-
-    public AuthorizationController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
-    {
-        _signInManager = signInManager;
-        _userManager = userManager;
-    }
-
     // === Authorization Code (+PKCE) ===
     [Authorize] // ensure the user is logged in via cookies/Identity UI
     [HttpGet("~/connect/authorize")]
@@ -31,10 +25,20 @@ public class AuthorizationController : Controller
         var request = HttpContext.GetOpenIddictServerRequest()
             ?? throw new InvalidOperationException("OIDC request is missing.");
 
-        var user = await _userManager.GetUserAsync(User)
+        var user = await userManager.GetUserAsync(User)
             ?? throw new InvalidOperationException("User not found.");
 
-        var principal = await _signInManager.CreateUserPrincipalAsync(user);
+        if (user == null) return Challenge();
+
+        var principal = await signInManager.CreateUserPrincipalAsync(user);
+
+        // --- Ensure required 'sub' claim is present ---
+        if (!principal.HasClaim(c => c.Type == OpenIddictConstants.Claims.Subject))
+        {
+            var id = (ClaimsIdentity)principal.Identity!;
+            id.AddClaim(new Claim(OpenIddictConstants.Claims.Subject, user.Id.ToString()));
+        }
+        // ----------------------------------------------
 
         // Scopes requested by the client
         principal.SetScopes(request.GetScopes());
@@ -102,7 +106,7 @@ public class AuthorizationController : Controller
     [HttpGet("~/connect/userinfo")]
     public async Task<IActionResult> UserInfo()
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
         if (user is null) return Challenge();
 
         return Ok(new

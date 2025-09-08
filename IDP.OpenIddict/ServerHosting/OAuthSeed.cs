@@ -1,4 +1,5 @@
-﻿using OpenIddict.Abstractions;
+﻿using Microsoft.AspNetCore.DataProtection;
+using OpenIddict.Abstractions;
 
 namespace IDP.OpenIddict.ServerHosting;
 
@@ -23,6 +24,34 @@ public class OAuthSeed : IHostedService
                 DisplayName = "Angular Web App",
                 RedirectUris = { new Uri("http://localhost:4200/auth/callback") },
                 PostLogoutRedirectUris = { new Uri("http://localhost:4200/") },
+                Permissions =
+                {
+                    // endpoints + flows
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.EndSession,
+                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                    OpenIddictConstants.Permissions.ResponseTypes.Code,
+
+                    // scopes the SPA may request
+                    OpenIddictConstants.Permissions.Scopes.Profile,
+                    OpenIddictConstants.Permissions.Scopes.Email,
+                    OpenIddictConstants.Permissions.Prefixes.Scope + "payments.read",
+                    OpenIddictConstants.Permissions.Prefixes.Scope + "accounting.read"
+                },
+                Requirements = { OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange }
+            });
+        }
+
+        if (await apps.FindByClientIdAsync("mvc-client") is null)
+        {
+            await apps.CreateAsync(new OpenIddictApplicationDescriptor
+            {
+                ClientId = "mvc-client",
+                ConsentType = OpenIddictConstants.ConsentTypes.Explicit,
+                DisplayName = "MVC Web App",
+                RedirectUris = { new Uri("https://localhost:7141/signin-oidc") },
+                PostLogoutRedirectUris = { new Uri("https://localhost:7141/signout-callback-oidc") },
                 Permissions =
                 {
                     // endpoints + flows
