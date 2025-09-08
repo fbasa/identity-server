@@ -32,7 +32,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("spa", p => p
-        .WithOrigins("https://localhost:4200")
+        .WithOrigins("http://localhost:4200")
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials());
