@@ -43,9 +43,10 @@ public static class ConfigSeed
             AllowedGrantTypes = GrantTypes.Code,
             RequirePkce = true,
             RequireClientSecret = false,
-            RedirectUris = { "https://localhost:4200/auth/callback" },
-            PostLogoutRedirectUris = { "https://localhost:4200/" },
-            AllowedCorsOrigins = { "https://localhost:4200" },
+           // RedirectUris = { "http://localhost:4200/auth/callback" },
+            RedirectUris = { "http://localhost:4200/auth/callback" },
+            PostLogoutRedirectUris = { "http://localhost:4200/" },
+            AllowedCorsOrigins = { "http://localhost:4200" },
             AllowAccessTokensViaBrowser = true,
             AllowedScopes = {
                 "openid", "profile",

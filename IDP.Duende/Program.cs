@@ -1,3 +1,4 @@
+using Duende.IdentityModel;
 using IDP.Duende.Identity;
 using IDP.Duende.ServerHosting;
 using Microsoft.AspNetCore.Identity;
@@ -26,10 +27,26 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+//Map Identity claim types to OIDC (ensures a 'sub' claim)
+builder.Services.Configure<IdentityOptions>(o =>
+{
+    o.ClaimsIdentity.UserIdClaimType = JwtClaimTypes.Subject; // "sub"
+    o.ClaimsIdentity.UserNameClaimType = JwtClaimTypes.Name;    // "name"
+    o.ClaimsIdentity.RoleClaimType = JwtClaimTypes.Role;    // "role"
+});
+
 //builder.Services.AddConfiguredIdentityServer(builder.Configuration);
 
 builder.Services
-    .AddIdentityServer()
+    .AddIdentityServer(options =>
+    {
+        options.EmitStaticAudienceClaim = true;
+        options.Events.RaiseErrorEvents = true;
+        options.Events.RaiseInformationEvents = true;
+        options.Events.RaiseFailureEvents = true;
+        options.Events.RaiseSuccessEvents = true;
+    })
+    .AddAspNetIdentity<AppUser>()   // <- this wires 'sub' from your Identity user
     .AddConfigurationStore(options =>
     {
         options.ConfigureDbContext = b =>
@@ -48,7 +65,7 @@ builder.Services.AddControllersWithViews(); // login/consent UI (Razor if you ad
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("spa", p => p
-        .WithOrigins("https://localhost:4200")
+        .WithOrigins("http://localhost:4200")
         .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 });
 
@@ -63,9 +80,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 app.UseCors("spa");
 
-app.UseIdentityServer();
+app.UseIdentityServer();    // order matters: IdentityServer before Authorization
 app.UseAuthorization();
 
 app.MapControllers();

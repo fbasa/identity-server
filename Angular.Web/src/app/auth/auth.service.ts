@@ -1,70 +1,47 @@
 import { Injectable, inject } from '@angular/core';
 import { OAuthService, OAuthEvent, OAuthSuccessEvent, OAuthErrorEvent } from 'angular-oauth2-oidc';
 import { authConfig } from './auth.config';
-import { filter, firstValueFrom, map } from 'rxjs';
-
+import { Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private readonly oauth = inject(OAuthService);
+  private readonly oauth = inject(OAuthService);
+  private readonly router = inject(Router);
 
+  async initAuth(): Promise<void> {
+    this.oauth.configure(authConfig);
 
-    async initAuth(): Promise<void> {
-        this.oauth.configure(authConfig);
-        this.oauth.setupAutomaticSilentRefresh(); // uses refresh tokens when available
+    // 1) Load discovery + try to complete the code flow on /auth/callback
+    await this.oauth.loadDiscoveryDocument();
+    await this.oauth.tryLoginCodeFlow({
+      onTokenReceived: async (_ctx) => {
+        // 2) Clean up the ugly callback URL and navigate somewhere pleasant
+        window.history.replaceState({}, document.title, window.location.origin + '/');
+        await this.oauth.loadUserProfile(); // optional
+      }
+    });
 
+    // (Optional) Debug: log OAuth events
+    this.oauth.events
+      .pipe(filter((e: OAuthEvent) => e instanceof OAuthSuccessEvent || e instanceof OAuthErrorEvent))
+      .subscribe(e => console.log('[OAuthEvent]', e));
+  }
 
-        // Try to parse tokens on app start (handles /auth/callback)
-        await this.oauth.loadDiscoveryDocument();
-        await this.oauth.tryLoginCodeFlow();
+  login(): void {
+    // Ensure discovery is loaded, then redirect to Duende
+    this.oauth.loadDiscoveryDocumentAndLogin();
+  }
 
+  logout(): void {
+    this.oauth.logOut(); // redirects to end session
+  }
 
-        // If not logged in, you can choose to trigger login here or keep app public.
-        // if (!this.isLoggedIn()) this.login();
+  isLoggedIn(): boolean {
+    return this.oauth.hasValidAccessToken();
+  }
 
-
-        // Optionally load user profile (requires 'openid profile' scopes)
-        if (this.isLoggedIn()) {
-            await this.oauth.loadUserProfile();
-        }
-
-
-        // Log auth events in dev
-        if (!window || !('location' in window)) return;
-        this.oauth.events
-            .pipe(filter((e: OAuthEvent) => e instanceof OAuthSuccessEvent || e instanceof OAuthErrorEvent))
-            .subscribe(e => console.log('[OAuthEvent]', e));
-    }
-
-
-    login(): void {
-        console.log('Starting login flow');
-        this.oauth.initLoginFlow();
-    }
-
-
-    async logout(): Promise<void> {
-        // end-session at Duende + local cleanup
-        await this.oauth.logOut();
-    }
-
-
-    isLoggedIn(): boolean {
-        return this.oauth.hasValidAccessToken();
-    }
-
-
-    get accessToken(): string | null {
-        return this.oauth.getAccessToken() || null;
-    }
-
-
-    get idToken(): string | null {
-        return this.oauth.getIdToken() || null;
-    }
-
-
-    get claims(): any {
-        return this.oauth.getIdentityClaims();
-    }
+  get accessToken(): string | null {
+    return this.oauth.getAccessToken() || null;
+  }
 }

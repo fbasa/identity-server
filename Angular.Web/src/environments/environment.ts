@@ -1,14 +1,14 @@
 export const environment = {
     production: false,
     auth: {
-        issuer: 'https://localhost:5001', // Duende base URL
+        issuer: 'https://localhost:7108', // Duende base URL
         clientId: 'angular-spa', // MUST exist in Duende clients
-        redirectUri: window.location.origin + '/auth/callback',
-        postLogoutRedirectUri: window.location.origin + '/',
+        redirectUri: 'http://localhost:4200/auth/callback',
+        postLogoutRedirectUri: 'http://localhost:4200/',
         scopes: 'openid profile payments.read accounting.read',
     },
     apis: {
-        payments: 'https://localhost:5003', // e.g., Payments.Api
-        accounting: 'https://localhost:5004' // e.g., Accounting.Api
+        payments: 'https://localhost:7024', // e.g., Payments.Api
+        accounting: 'https://localhost:7095' // e.g., Accounting.Api
     }
 };
