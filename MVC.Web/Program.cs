@@ -85,6 +85,11 @@ builder.Services.AddHttpClient("AccountingApi", c =>
 .AddHttpMessageHandler<MVC.Web.Auth.AccessTokenHandler>();
 
 
+// Services
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages(); // if you use Identity Default UI
+
+
 var app = builder.Build();
 
 
@@ -94,5 +99,17 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Pipeline
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+// MVC routing (either of these is fine)
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+// or: app.MapDefaultControllerRoute();
+
+app.MapRazorPages(); // required if using Identity UI pages (/Identity/Account/Login)
 
 app.Run();

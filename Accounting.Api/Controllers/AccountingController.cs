@@ -9,7 +9,7 @@ public class AccountingController : Controller
 {
     [HttpGet]
     [Authorize(Policy = "accounting.read")]
-    public IActionResult GetPayments() => Ok(new[] { new { id = 1, amount = 500 } });
+    public IActionResult GetPayments() => Ok(new[] { new { id = 1, amount = 1500 } });
 
     [HttpPost]
     [Authorize(Policy = "accounting.write")]

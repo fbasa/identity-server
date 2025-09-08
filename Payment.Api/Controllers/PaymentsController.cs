@@ -8,7 +8,7 @@ public class PaymentsController : ControllerBase
 {
     [HttpGet]
     [Authorize(Policy = "payments.read")]
-    public IActionResult GetPayments() => Ok(new[] { new { id = 1, amount = 500 } });
+    public IActionResult GetPayments() => Ok(new[] { new { id = 1, amount = 2500 } });
 
     [HttpPost]
     [Authorize(Policy = "payments.write")]
