@@ -44,12 +44,13 @@ public static class IdentityServerHosting
         await cfgCtx.Database.MigrateAsync();
         await opCtx.Database.MigrateAsync();
 
-        // Seed clients/scopes/resources if empty
+        //Seed clients/ scopes / resources if empty
         if (!cfgCtx.Clients.Any())
         {
             foreach (var c in ConfigSeed.Clients())
                 cfgCtx.Clients.Add(c.ToEntity());
         }
+
         if (!cfgCtx.IdentityResources.Any())
         {
             foreach (var r in ConfigSeed.IdentityResources())

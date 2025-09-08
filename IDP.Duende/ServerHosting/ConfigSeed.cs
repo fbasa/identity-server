@@ -66,6 +66,27 @@ public static class ConfigSeed
             ClientSecrets = { new Secret("super-secret-worker".Sha256()) },
             AllowedScopes = { "payments.write","accounting.write" },
             AccessTokenLifetime = 600,
+        },
+
+        new Client
+        {
+            ClientId = "mvc-client",
+            ClientName = "MVC Web App",
+            AllowedGrantTypes = GrantTypes.Code,
+            RequirePkce = true,
+            RequireClientSecret = true, // confidential web app
+            ClientSecrets = { new Secret("mvc-secret".Sha256()) },
+
+
+            RedirectUris = { "https://localhost:5002/signin-oidc" },
+            PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+            FrontChannelLogoutUri = "https://localhost:5002/signout-oidc",
+            AllowedCorsOrigins = { "https://localhost:5002" },
+
+
+            AllowedScopes = { "openid", "profile", "payments.read", "accounting.read" },
+            AllowOfflineAccess = false, // set true if you want refresh tokens
+            AccessTokenLifetime = 900 // 15 minutes (example)
         }
     };
 }

@@ -1,8 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
+<hgroup>
+    <h1>MVC + Duende IdentityServer</h1>
+    <p>Authorization Code + PKCE; scopes: <code>openid profile payments.read accounting.read</code></p>
+</hgroup>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+@if (User?.Identity?.IsAuthenticated ?? false)
+{
+    <div class="grid">
+        <a class="contrast" href="/call-payments">Call Payments API</a>
+        <a class="contrast" href="/call-accounting">Call Accounting API</a>
+    </div>
+}
+else
+{
+    <p>Please <a asp-controller="Account" asp-action="Login">login</a> to call protected APIs.</p>
+}
