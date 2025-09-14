@@ -1,3 +1,5 @@
+using Payment.Api.Auth;
+
 namespace Payment.Api;
 
 public static class AuthorizationExtensions
@@ -6,8 +8,13 @@ public static class AuthorizationExtensions
     {
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("payments.read", p => p.RequireClaim("scope", "payments.read", "payments.write"));
-            options.AddPolicy("payments.write", p => p.RequireClaim("scope", "payments.write"));
+            //// Duende: way to check claims
+            //options.AddPolicy("payments.read", p => p.RequireClaim("scope", "payments.read", "payments.write"));
+            //options.AddPolicy("payments.write", p => p.RequireClaim("scope", "payments.write"));
+
+            // OpenIddict: way to check scopes
+            options.AddPolicy("payments.read", p => p.RequireScope("payments.read", "payments.write"));
+            options.AddPolicy("payments.write", p => p.RequireScope("payments.write"));
         });
         return services;
     }

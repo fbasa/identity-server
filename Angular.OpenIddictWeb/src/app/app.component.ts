@@ -23,5 +23,5 @@ export class AppComponent implements OnInit {
     this.loadAccounting();
   }
   loadPayments() { this.paymentsApi.getAll().subscribe(r => this.payments = r); }
-  loadAccounting() { this.accountingApi.post({}).subscribe(r => this.accounting = r as any[]); }
+  loadAccounting() { this.accountingApi.getAll().subscribe(r => this.accounting = r); }
 }

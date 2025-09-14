@@ -1,3 +1,5 @@
+using Accounting.Api.Auth;
+
 namespace Accounting.Api;
 
 public static class AuthorizationExtensions
@@ -6,8 +8,14 @@ public static class AuthorizationExtensions
     {
         services.AddAuthorization(options =>
         {
-            options.AddPolicy("accounting.read", p => p.RequireClaim("scope", "accounting.read", "accounting.write"));
-            options.AddPolicy("accounting.write", p => p.RequireClaim("scope", "accounting.write"));
+            //// Duende: way to check claims
+            //options.AddPolicy("accounting.read", p => p.RequireClaim("scope", "accounting.read", "accounting.write"));
+            //options.AddPolicy("accounting.write", p => p.RequireClaim("scope", "accounting.write"));
+
+
+            // OpenIddict: way to check scopes
+            options.AddPolicy("accounting.read", p => p.RequireScope("accounting.read", "accounting.write"));
+            options.AddPolicy("accounting.write", p => p.RequireScope("accounting.write"));
         });
         return services;
     }

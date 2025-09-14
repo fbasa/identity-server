@@ -39,9 +39,10 @@ public class AuthorizationController(
             id.AddClaim(new Claim(OpenIddictConstants.Claims.Subject, user.Id.ToString()));
         }
         // ----------------------------------------------
+        var scopes = request.GetScopes();
 
         // Scopes requested by the client
-        principal.SetScopes(request.GetScopes());
+        principal.SetScopes(scopes);
 
         // Map scopes -> API resources (audience)
         var resources = new HashSet<string>(StringComparer.Ordinal);
