@@ -23,7 +23,7 @@ public static class OAuthServerHosting
                 options.SetAuthorizationEndpointUris("/connect/authorize")
                        .SetTokenEndpointUris("/connect/token")
                        .SetUserInfoEndpointUris("/connect/userinfo")
-                       .SetIntrospectionEndpointUris("/connect/introspect");
+                       .SetEndSessionEndpointUris("/connect/logout");
 
                 // Flows
                 options.AllowAuthorizationCodeFlow()
@@ -48,7 +48,8 @@ public static class OAuthServerHosting
                 options.UseAspNetCore()
                        .EnableAuthorizationEndpointPassthrough()
                        .EnableTokenEndpointPassthrough()
-                       .EnableUserInfoEndpointPassthrough();
+                       .EnableUserInfoEndpointPassthrough()
+                       .EnableEndSessionEndpointPassthrough(); 
             });
 
         return services;

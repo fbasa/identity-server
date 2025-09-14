@@ -117,4 +117,27 @@ public class AuthorizationController(
             email = user.Email
         });
     }
+
+    [HttpGet("~/connect/logout")]
+    public async Task<IActionResult> LogoutGet() => await LogoutCore();
+
+    [HttpPost("~/connect/logout")]
+    [ValidateAntiForgeryToken] // keep if you call it from a form; GET is what SPAs typically use
+    public async Task<IActionResult> LogoutPost() => await LogoutCore();
+
+    private async Task<IActionResult> LogoutCore()
+    {
+        await signInManager.SignOutAsync();                               // clear Identity cookie
+        await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+        // Hand control back to OpenIddict: it will use a validated post_logout_redirect_uri if provided,
+        // otherwise it will use the RedirectUri you pass via AuthenticationProperties.
+        return SignOut(
+            new Microsoft.AspNetCore.Authentication.AuthenticationProperties
+            {
+                RedirectUri = Url.Content("~/")                     // fallback if no post_logout_redirect_uri
+            },
+            OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
+        );
+    }
 }

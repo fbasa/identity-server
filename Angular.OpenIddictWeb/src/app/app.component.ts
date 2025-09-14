@@ -24,4 +24,6 @@ export class AppComponent implements OnInit {
   }
   loadPayments() { this.paymentsApi.getAll().subscribe(r => this.payments = r); }
   loadAccounting() { this.accountingApi.getAll().subscribe(r => this.accounting = r); }
+
+  logout() { this.auth.logout(); }
 }

@@ -31,6 +31,7 @@ builder.Services.Configure<IdentityOptions>(o =>
     o.ClaimsIdentity.RoleClaimType = OpenIddictConstants.Claims.Role;    // "role"
 });
 
+// AddOpenIddict() registration (IdP)
 builder.Services.AddConfiguredOpenIddict(builder.Configuration);
 
 builder.Services.AddHostedService<OAuthSeed>();

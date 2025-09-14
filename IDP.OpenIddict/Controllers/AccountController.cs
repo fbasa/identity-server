@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-                                      // For OpenIddict, you can just validate returnUrl is local or starts with /connect/authorize
+
+// For OpenIddict, you can just validate returnUrl is local or starts with /connect/authorize
 
 [AllowAnonymous]
 public class AccountController : Controller
@@ -41,14 +42,6 @@ public class AccountController : Controller
             return Redirect(vm.ReturnUrl);
 
         return Redirect("~/");
-    }
-
-    [ValidateAntiForgeryToken]
-    [HttpGet("/Account/Logout")]
-    public async Task<IActionResult> Logout(string? returnUrl = null)
-    {
-        await _signIn.SignOutAsync();
-        return Redirect(returnUrl ?? "~/");
     }
 }
 
